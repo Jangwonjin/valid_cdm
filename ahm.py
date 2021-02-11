@@ -61,17 +61,20 @@ def calc_reachability(A):
     num_attribute = A.shape[0]
     I = np.identity(num_attribute)
 
-    # arr = A + I
-    # print(arr.shape)
+    # repeat multiplications
+    R = A + I
+    # print(R)
+    for i in range(num_attribute):
+        R = np.dot(R, A + I)
+        # print(R)
 
-    R = np.dot(A + I, A + I)
-
-    for i in range(R.shape[0]):
-        for j in range(R.shape[1]):
-            if R[i][j] >= 1:
-                R[i][j] = 1
-            else:
-                continue
+    R = (R > 0).astype(int)   # binarize (Don't care no. of visits.)
+    # for i in range(R.shape[0]):
+    #     for j in range(R.shape[1]):
+    #         if R[i][j] >= 1:
+    #             R[i][j] = 1
+    #         else:
+    #             continue
     return R
 
 

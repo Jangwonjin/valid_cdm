@@ -30,8 +30,12 @@ class Graph(object):
         return self.numNodes
 
 
-# 2^n concept state matrix generation
 def make_all_concept_state_mat(num_of_concepts):
+    """
+    generate 2^n x n matrix of all concept states
+    :param num_of_concepts:
+    :return:
+    """
     concept_state = list()
     all_concept_state = sorted(list(GrayCode(num_of_concepts).generate_gray()))
     
@@ -42,6 +46,64 @@ def make_all_concept_state_mat(num_of_concepts):
     concept_state = np.reshape(concept_state,(-1,num_of_concepts))
     
     return concept_state
+
+
+def calc_reachability(A):
+    """
+    calc reachability matrix R from adjacency matrix A
+    R_ij = 1 means there exists a path from node i to node j
+    :param A: adjacency matrix
+    :return: reachability matrix R
+    """
+    if isinstance(A, list):
+        A = np.array(A)
+
+    num_attribute = A.shape[0]
+    I = np.identity(num_attribute)
+
+    # arr = A + I
+    # print(arr.shape)
+
+    R = np.dot(A + I, A + I)
+
+    for i in range(R.shape[0]):
+        for j in range(R.shape[1]):
+            if R[i][j] >= 1:
+                R[i][j] = 1
+            else:
+                continue
+    return R
+
+
+def calc_Q(R, reduce_Q=True):
+    num_attribute = R.shape[0]
+
+    # start from all possible sttes
+    Q = make_all_concept_state_mat(num_attribute)[1:]
+    # print(Q.shape)
+
+    for item in range(Q.shape[0]):
+        for attribute in range(Q.shape[1]):
+            if Q[item,attribute] == 1:
+                for i in np.where(R[:, attribute] == 1)[0]:   # fill 1 for all the "preceding" attribute
+                    Q[item,i] = 1
+    # print(Q.shape)
+
+    # reduce Q
+    if reduce_Q:
+        Q = np.unique(Q, axis=0)
+    # print(Q.shape)
+
+    return Q
+
+
+def calc_ideal_responses(Q):
+    num_attribute = Q.shape[1]
+    concept_state = make_all_concept_state_mat(num_attribute)
+
+    ideal_responses = sorted(list(set(map(tuple, make_ideal_response(concept_state, Q.T)))))
+
+    return ideal_responses
 
 
 def NOT_GATE(input_vectors):
@@ -57,13 +119,13 @@ def NOT_GATE(input_vectors):
 
 
 # ideal response (Barnes, 2005)
-def make_ideal_response(concept_state, Q_matrix):
-    tmp = np.dot(NOT_GATE(concept_state), Q_matrix)
+def make_ideal_response(concept_state, Q):
+    tmp = np.dot(NOT_GATE(concept_state), Q)
     for i in tmp:
         for j in range(len(i)):
-            if i[j] == 0 :
+            if i[j] == 0:
                 pass
-            else :
+            else:
                 i[j] = 1
                 
     ideal_response = NOT_GATE(tmp)

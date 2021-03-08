@@ -78,10 +78,35 @@ def calc_reachability(A):
     return R
 
 
-def calc_Q(R, reduce_Q=True):
+def calc_knowledge_states(A, reduce=True):
+    num_attribute = A.shape[1]
+
+
+    # start from all possible states
+    S = make_all_concept_state_mat(num_attribute)
+    # print(S.shape)
+
+    R = calc_reachability(A)
+
+    for item in range(S.shape[0]):
+        for attribute in range(S.shape[1]):
+            if S[item,attribute] == 1:
+                for i in np.where(R[:, attribute] == 1)[0]:   # fill 1 for all the "preceding" attribute
+                    S[item,i] = 1
+    # print(S.shape)
+
+    # reduce S
+    if reduce:
+        S = np.unique(S, axis=0)
+    # print(S.shape)
+
+    return S
+
+
+def calc_Q(R, reduce=True):
     num_attribute = R.shape[0]
 
-    # start from all possible sttes
+    # start from all possible states
     Q = make_all_concept_state_mat(num_attribute)[1:]
     # print(Q.shape)
 
@@ -93,16 +118,17 @@ def calc_Q(R, reduce_Q=True):
     # print(Q.shape)
 
     # reduce Q
-    if reduce_Q:
+    if reduce:
         Q = np.unique(Q, axis=0)
     # print(Q.shape)
 
     return Q
 
 
-def calc_ideal_responses(Q):
+def calc_ideal_responses(Q, concept_state=None):
     num_attribute = Q.shape[1]
-    concept_state = make_all_concept_state_mat(num_attribute)
+    if concept_state is None:
+        concept_state = make_all_concept_state_mat(num_attribute)
 
     ideal_responses = sorted(list(set(map(tuple, make_ideal_response(concept_state, Q.T)))))
 
@@ -180,7 +206,7 @@ def get_index(Qr, hamming_dists, iters):
         else:
             mapping_index[i] = index_with_min_dist[0]
     
-    return mapping_index
+    return mapping_index.astype(int)
 
 
 def calc_cost(response, IDR, Qr, indices, iters):

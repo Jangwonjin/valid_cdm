@@ -2,7 +2,7 @@
 This repository shows validation method of cognitive diagnosis models (CDMs).
 
 ## :memo: DATASET
-* Number of students:  977
+* Number of students: 977 (Male: 508, Female: 469)
 * Cognitive Attributes
 
 **A1**|**A2**|**A3**|**A4**|**A5**|**A6**|**A7**

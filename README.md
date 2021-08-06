@@ -1,7 +1,7 @@
 # valid_cdm
 This repository shows validation method of cognitive diagnosis models (CDMs).
 
-## DATASET
+## :memo: DATASET
 * Number of students:  977
 * Cognitive Attributes
 

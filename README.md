@@ -20,4 +20,7 @@ Addition|Subtraction|Multiplication|Division|Carry|Borrow|'0' in multiplication
 ## Method of validating each hierarchy
 ![fig2](/figure/fig2.jpg)
 
+## Results
+![fig5](/figure/fig5.jpg)
+
 ## Reference

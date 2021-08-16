@@ -1,6 +1,14 @@
 # valid_cdm
 This repository shows validation method of cognitive diagnosis models (CDMs).
 
+## Run
+```
+git clone github.com/Jangwonjin/valid_cdm
+```
+
+And you can run ```random_sampling.ipynb``` on the jupyter notebook.
+
+
 ## :memo: Dataset
 * Number of students: 977 (Male: 508, Female: 469)
 * Cognitive Attributes
@@ -22,5 +30,3 @@ Addition|Subtraction|Multiplication|Division|Carry|Borrow|'0' in multiplication
 
 ## Results
 ![fig5](/figure/fig5.jpg)
-
-## Reference
